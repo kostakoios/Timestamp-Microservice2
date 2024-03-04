@@ -24,6 +24,36 @@ app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
 });
 
+app.get("/api/:date", function (req, res) {
+  let getReqDate = req.params.date;
+  let responseObject = null;
+  if (!isNaN(new Date(getReqDate))) {
+    responseObject = {
+      unix: Math.floor(new Date(getReqDate).getTime()),
+      utc: new Date(getReqDate).toUTCString()
+    }
+  } else if (!isNaN(new Date(Number(getReqDate)))) {
+    let date = new Date(Number(getReqDate));
+    responseObject = {
+      unix: Math.floor(date.getTime()),
+      utc: date.toUTCString()
+    }
+  } else {
+    responseObject = {error : "Invalid Date"};
+  }
+  
+  res.json(responseObject);
+});
+
+app.get("/api", function (req, res) {
+  let date = new Date();
+  res.json({
+    unix: new Date().valueOf(),
+    utc: date.toUTCString()
+  });
+});
+
+
 // listen for requests :)
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
